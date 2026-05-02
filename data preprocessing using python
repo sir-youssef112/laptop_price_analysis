@@ -1,0 +1,45 @@
+import pandas as pd
+
+df = pd.read_csv('laptop_price.csv', encoding='latin1')
+
+print(df)
+
+shape=df.shape
+print(f"shape of the data set {shape}")
+
+print(f"columns-->\n{df.columns}")
+
+df['Weight'] = df['Weight'].str.replace('kg', '')
+df['Weight'] = pd.to_numeric(df['Weight'], errors='coerce')
+df = df[df['Weight'] != 0]
+
+print(f"type of columns:\n {df.dtypes}")
+
+print(f"number of nulls -->\n{df.isna().sum()}")
+d=df.duplicated().sum()
+print(f'number of duplicates : {d}')
+
+df['Company'] = df['Company'].astype(str).str.strip().str.lower()
+df['Product'] = df['Product'].astype(str).str.strip().str.lower()
+df['TypeName'] = df['TypeName'].astype(str).str.strip().str.lower()
+
+print(df.describe())
+
+numerical_features = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+df[numerical_features].describe()
+
+print(df)
+
+df1=df.dropna()
+print(df1.isna().sum())
+
+df_clean = df1.copy()
+
+num_cols = df_clean.select_dtypes(include=['int64', 'float64'])
+
+corr = num_cols.corr()
+df_clean = df1.copy()
+
+num_cols = df_clean.select_dtypes(include=['int64', 'float64'])
+
+df1.to_csv("laptop_price_cleaned.csv", index=False)
